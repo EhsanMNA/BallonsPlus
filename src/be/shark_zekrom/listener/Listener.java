@@ -3,7 +3,6 @@ package be.shark_zekrom.listener;
 import be.shark_zekrom.Main;
 import be.shark_zekrom.utils.GetSkull;
 import be.shark_zekrom.utils.SummonBalloons;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -51,7 +50,6 @@ public class Listener implements org.bukkit.event.Listener {
                 @Override
                 public void run() {
                     SummonBalloons.summonBalloon(player, item);
-
                 }
             }.runTaskLater(Main.getInstance(), 10L);
 

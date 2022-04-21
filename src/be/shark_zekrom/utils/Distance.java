@@ -5,10 +5,8 @@ import org.bukkit.util.Vector;
 
 public class Distance {
 
-
     public static void line(Entity entity, Entity player) {
         if (entity.getWorld().equals(player.getWorld())) {
-
             if (entity.getLocation().distance(player.getLocation()) > 3.8D) {
                 Vector direction = player.getLocation().toVector().subtract(entity.getLocation().toVector())
                         .normalize();
@@ -18,10 +16,6 @@ public class Distance {
                 entity.setVelocity(entity.getVelocity().add(new Vector(0.0D, 0.3D, 0.0D)));
 
             }
-            //   if (entity.getLocation().getY() > player.getLocation().getY() + 4.0D) {
-            //        entity.setVelocity(entity.getVelocity().add(new Vector(0.0D, -0.2D, 0.0D)));
-
-            //    }
             entity.getLocation().setDirection(player.getLocation().getDirection());
 
             ArmorStand as = SummonBalloons.as.get(player);

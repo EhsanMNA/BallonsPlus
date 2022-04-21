@@ -18,7 +18,6 @@ public class InventoryItems {
             borderItem.setItemMeta(borderMeta);
             inventory.setItem(border[i], borderItem);
         }
-
     }
 
     public static void remove(Inventory inventory) {

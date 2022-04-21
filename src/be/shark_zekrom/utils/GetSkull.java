@@ -23,7 +23,6 @@ public class GetSkull {
             Field profileField = headMeta.getClass().getDeclaredField("profile");
             profileField.setAccessible(true);
             profileField.set(headMeta, profile);
-
         } catch (IllegalArgumentException | NoSuchFieldException | SecurityException | IllegalAccessException error) {
             error.printStackTrace();
         }

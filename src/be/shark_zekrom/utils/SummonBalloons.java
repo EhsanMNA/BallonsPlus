@@ -40,22 +40,27 @@ public class SummonBalloons {
         as1.addEquipmentLock(EquipmentSlot.OFF_HAND, ArmorStand.LockType.ADDING_OR_CHANGING);
 
         as.put(player, as1);
-
     }
 
     public static void removeBalloon(Player player) {
-        ArmorStand as = SummonBalloons.as.get(player);
+        ArmorStand as = null;
+        Parrot parrot = null;
+        try {
+            as = SummonBalloons.as.get(player);
+            parrot = SummonBalloons.balloons.get(player);
+        }catch (Exception ignored){}
 
-        if (Main.getInstance().getConfig().getBoolean("ShowParticlesBalloonsOnRemove")) {
-            as.getWorld().spawnParticle(Particle.CLOUD, as.getLocation().add(0, 2, 0), 5, 0.1, 0.1, 0.1, 0.1);
+        if (as != null && parrot != null){
+            if (Main.getInstance().getConfig().getBoolean("ShowParticlesBalloonsOnRemove")) {
+                as.getWorld().spawnParticle(Particle.CLOUD, as.getLocation().add(0, 2, 0), 5, 0.1, 0.1, 0.1, 0.1);
+                as.getWorld().spawnParticle(Particle.BARRIER, as.getLocation().add(0, 2, 0), 5, 0.1, 0.1, 0.1, 0.1);
+            }
+            SummonBalloons.as.remove(player);
+            as.remove();
+
+            SummonBalloons.balloons.remove(player);
+            parrot.remove();
         }
-        SummonBalloons.as.remove(player);
-        as.remove();
-
-        Parrot parrot = SummonBalloons.balloons.get(player);
-        SummonBalloons.balloons.remove(player);
-        parrot.remove();
-
     }
 
     public static void removeAllBalloon() {

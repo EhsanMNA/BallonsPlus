@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Balloons+:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Balloons__jar</output-path>
+    <root id="archive" name="Balloons+.jar">
+      <element id="module-output" name="Balloons+" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../Minecraft/Server jars/spigot/spigot-1.16.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../Server/Plugins/BetterChairs-v1.5.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

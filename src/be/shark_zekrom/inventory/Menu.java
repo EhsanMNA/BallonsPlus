@@ -175,8 +175,6 @@ public class Menu implements Listener {
 
                 if (Main.showOnlyBallonsWithPermission) {
                     if (event.getCurrentItem() != null) {
-
-
                         if (slot < 45) {
                             File file = new File(Main.getInstance().getDataFolder(), "config.yml");
                             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
@@ -203,12 +201,14 @@ public class Menu implements Listener {
                                     SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
                                 }
                             }
+                            player.playSound(player.getLocation(),Main.getInstance().summonSound, 10,2);
                             SummonBalloons.playerBalloons.put(player, (playerlist.get(player).get(slot + pages.get(player))));
                             player.closeInventory();
                         }
 
 
                         if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
+                            player.playSound(player.getLocation(),Main.getInstance().removeSound,10,2);
                             player.closeInventory();
                             SummonBalloons.removeBalloon(player);
                         }
@@ -226,7 +226,6 @@ public class Menu implements Listener {
 
                 } else {
                     if (event.getCurrentItem() != null) {
-
 
                         if (slot < 45) {
                             File file = new File(Main.getInstance().getDataFolder(), "config.yml");
@@ -263,7 +262,7 @@ public class Menu implements Listener {
                                                     SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + key + ".head")));
                                                 }
                                             }
-
+                                            player.playSound(player.getLocation(),Main.getInstance().summonSound, 10,2);
                                             SummonBalloons.playerBalloons.put(player, key);
                                             player.closeInventory();
                                         }
@@ -278,6 +277,7 @@ public class Menu implements Listener {
                         }
 
                         if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
+                            player.playSound(player.getLocation(),Main.getInstance().removeSound,10,2);
                             player.closeInventory();
                             SummonBalloons.removeBalloon(player);
                             SummonBalloons.playerBalloons.remove(player);

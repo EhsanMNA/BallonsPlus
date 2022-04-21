@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="BetterChairs-v1.5.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../Server/Plugins/BetterChairs-v1.5.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

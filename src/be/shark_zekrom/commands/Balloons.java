@@ -6,6 +6,7 @@ import be.shark_zekrom.utils.GetSkull;
 import be.shark_zekrom.utils.SummonBalloons;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,32 +21,33 @@ import java.io.File;
 public class Balloons implements CommandExecutor {
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command cmd, String string, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String string, String[] args) {
 
-        Player player = (Player) commandSender;
+        String prefix = "§bBalloons §f» ";
+
+        Player player = (Player) sender;
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("help")) {
-                player.sendMessage("§b==========[Balloons+]==========");
                 player.sendMessage(ChatColor.AQUA + "");
-                player.sendMessage(ChatColor.AQUA + "/balloons+ help");
-                player.sendMessage(ChatColor.AQUA + "/balloons+ reload");
-                player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
-                player.sendMessage(ChatColor.AQUA + "/balloons+ spawn <name>");
-                player.sendMessage(ChatColor.AQUA + "/balloons+ remove");
+                player.sendMessage(ChatColor.AQUA + "/balloons help");
+                player.sendMessage(ChatColor.AQUA + "/balloons menu");
+                player.sendMessage(ChatColor.AQUA + "/balloons spawn <name>");
+                player.sendMessage(ChatColor.AQUA + "/balloons remove");
+                player.sendMessage(ChatColor.AQUA + "/balloons particles <on/off>");
+                player.sendMessage(ChatColor.AQUA + "");
             }
             if (args[0].equalsIgnoreCase("remove")) {
                 if (SummonBalloons.balloons.containsKey(player)) {
                     SummonBalloons.removeBalloon(player);
                     SummonBalloons.playerBalloons.remove(player);
 
-                    player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsRemoved"));
-
+                    player.playSound(player.getLocation(),Main.getInstance().removeSound, 10,2);
+                    player.sendMessage(prefix + Main.getInstance().getConfig().getString("BalloonsRemoved"));
                 }
             }
-            if (args[0].equalsIgnoreCase("inventory")) {
+            if (args[0].equalsIgnoreCase("menu")) {
                 if (player.isInsideVehicle()) {
-                    player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("CantOpenInventory"));
-
+                    player.sendMessage(prefix + Main.getInstance().getConfig().getString("CantOpenInventory"));
                 } else {
                     Menu.inventory(player, 0);
                 }
@@ -55,8 +57,11 @@ public class Balloons implements CommandExecutor {
                 ConfigurationSection cs = Main.getInstance().getConfig().getConfigurationSection("Balloons");
                 Menu.list.addAll(cs.getKeys(false));
 
+                Main.getInstance().removeSound = Sound.valueOf(Main.getInstance().getConfig().getString("BalloonsRemovedSound"));
+                Main.getInstance().summonSound = Sound.valueOf(Main.getInstance().getConfig().getString("BalloonsSummonedSound"));
+                Main.getInstance().particleToggleSound = Sound.valueOf(Main.getInstance().getConfig().getString("BalloonsParticleToggleSound"));
                 Main.showOnlyBallonsWithPermission = Main.getInstance().getConfig().getBoolean("ShowOnlyBalloonsWithPermission");
-                player.sendMessage("§b[Balloons+] reloaded.");
+                player.sendMessage(prefix + "reloaded.");
 
             }
         } else if (args.length > 1) {
@@ -67,7 +72,7 @@ public class Balloons implements CommandExecutor {
                 if (config.getString("Balloons." + args[1]) != null) {
 
                     String permission = config.getString("Balloons." + args[1] + ".permission");
-                    if (commandSender.hasPermission(permission)) {
+                    if (sender.hasPermission(permission)) {
                         if (SummonBalloons.balloons.containsKey(player)) {
                             if (config.getString("Balloons." + args[1] + ".item") != null) {
                                 ItemStack itemStack = new ItemStack(Material.valueOf(config.getString("Balloons." + args[1] + ".item")));
@@ -77,7 +82,6 @@ public class Balloons implements CommandExecutor {
                                 SummonBalloons.as.get(player).getEquipment().setHelmet(itemStack);
                             } else {
                                 SummonBalloons.as.get(player).getEquipment().setHelmet(GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
-
                             }
                         } else {
                             if (config.getString("Balloons." + args[1] + ".item") != null) {
@@ -86,30 +90,41 @@ public class Balloons implements CommandExecutor {
                                 itemMeta.setCustomModelData(config.getInt("Balloons." + args[1] + ".custommodeldata"));
                                 itemStack.setItemMeta(itemMeta);
                                 SummonBalloons.summonBalloon(player, itemStack);
-
                             } else {
                                 SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + args[1] + ".head")));
-
                             }
-
                         }
+                        player.playSound(player.getLocation(),Main.getInstance().summonSound,10,2);
                         SummonBalloons.playerBalloons.put(player, args[1]);
-                        player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("BalloonsSummoned"));
+                        player.playSound(player.getLocation(),Main.getInstance().summonSound, 10,2);
+                        player.sendMessage(prefix + Main.getInstance().getConfig().getString("BalloonsSummoned"));
 
                     } else {
-                        player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("NoBalloonsPermission"));
+                        player.sendMessage(prefix + Main.getInstance().getConfig().getString("NoBalloonsPermission"));
                     }
                 } else {
-                    player.sendMessage("§b[Balloons+] " + Main.getInstance().getConfig().getString("NoBalloonsFound"));
+                    player.sendMessage(prefix + Main.getInstance().getConfig().getString("NoBalloonsFound"));
                 }
             }
+            if (args[0].equalsIgnoreCase("particles")){
+                if (args[1].equalsIgnoreCase("on")){
+                    Main.getInstance().disabledBalloonParticles.remove(player.getUniqueId());
+                    player.sendMessage(prefix + ChatColor.GREEN + "Balloons particles enabled.");
+                }
+                if (args[1].equalsIgnoreCase("off")){
+                    Main.getInstance().disabledBalloonParticles.add(player.getUniqueId());
+                    player.sendMessage(prefix + ChatColor.RED + "Balloons particles disabled.");
+                }
+                player.playSound(player.getLocation(),Main.getInstance().particleToggleSound, 10,2);
+            }
         } else {
-            player.sendMessage("§b==========[Balloons+]==========");
+            player.sendMessage("");
+            player.sendMessage(ChatColor.AQUA + "/balloons help");
+            player.sendMessage(ChatColor.AQUA + "/balloons menu");
+            player.sendMessage(ChatColor.AQUA + "/balloons spawn <name>");
+            player.sendMessage(ChatColor.AQUA + "/balloons remove");
+            player.sendMessage(ChatColor.AQUA + "/balloons particles <on/off>");
             player.sendMessage(ChatColor.AQUA + "");
-            player.sendMessage(ChatColor.AQUA + "/balloons+ help");
-            player.sendMessage(ChatColor.AQUA + "/balloons+ inventory");
-            player.sendMessage(ChatColor.AQUA + "/balloons+ spawn <name>");
-            player.sendMessage(ChatColor.AQUA + "/balloons+ remove");
         }
         return false;
     }

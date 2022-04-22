@@ -43,6 +43,24 @@ public class Main extends JavaPlugin {
         pm.registerEvents(new Listener(), this);
         pm.registerEvents(new Menu(), this);
 
+        for (World world : Bukkit.getWorlds()) {
+            for (Entity entity : world.getEntities()) {
+                if (entity instanceof Parrot) {
+                    Parrot parrot = (Parrot) entity;
+                    if (parrot.getScoreboardTags().contains("Balloons")) {
+                        parrot.remove();
+                    }
+                }
+                if (entity instanceof ArmorStand) {
+                    ArmorStand armorStand = (ArmorStand) entity;
+                    if (armorStand.getScoreboardTags().contains("Balloons")) {
+                        armorStand.remove();
+                    }
+                }
+
+            }
+        }
+
         this.getCommand("balloons").setExecutor(new Balloons());
         getCommand("balloons").setTabCompleter(new BalloonsTabCompleter());
 

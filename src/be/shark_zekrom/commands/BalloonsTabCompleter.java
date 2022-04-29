@@ -14,7 +14,7 @@ public class BalloonsTabCompleter implements TabCompleter {
     static ArrayList<String > list = new ArrayList<>();
 
     static {
-        list.add("help"); list.add("reload"); list.add("menu");
+        list.add("help"); list.add("reload"); list.add("menu"); list.add("buy");
         list.add("spawn"); list.add("remove"); list.add("particles");
     }
 
@@ -34,6 +34,11 @@ public class BalloonsTabCompleter implements TabCompleter {
                 if (args[1].toLowerCase().startsWith("of")) result.add("off");
             }
             if (args[0].equalsIgnoreCase("spawn")){
+                for (String ballonName : Menu.list){
+                    if (ballonName.toLowerCase().startsWith(args[1].toLowerCase())) result.add(ballonName);
+                }
+            }
+            if (args[0].equalsIgnoreCase("buy")){
                 for (String ballonName : Menu.list){
                     if (ballonName.toLowerCase().startsWith(args[1].toLowerCase())) result.add(ballonName);
                 }

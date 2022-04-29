@@ -12,7 +12,7 @@ public class InventoryItems {
     public static void border(Inventory inventory) {
         Integer[] border = {45, 46, 47, 51, 52, 53};
         for (int i = 0; i < border.length; i++) {
-            ItemStack borderItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+            ItemStack borderItem = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
             ItemMeta borderMeta = borderItem.getItemMeta();
             borderMeta.setDisplayName(" ");
             borderItem.setItemMeta(borderMeta);

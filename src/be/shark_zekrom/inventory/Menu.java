@@ -1,10 +1,13 @@
 package be.shark_zekrom.inventory;
 
 import be.shark_zekrom.Main;
+import be.shark_zekrom.Storage;
+import be.shark_zekrom.utils.Balloon;
 import be.shark_zekrom.utils.GetSkull;
 import be.shark_zekrom.utils.InventoryItems;
 import be.shark_zekrom.utils.SummonBalloons;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,13 +27,14 @@ public class Menu implements Listener {
 
     public static HashMap<Player, Integer> pages = new HashMap<>();
     public static ArrayList<String> list = new ArrayList<>();
+    public static ArrayList<Balloon> balloons = new ArrayList<>();
     public static HashMap<Player, ArrayList<String>> playerlist = new HashMap<>();
 
 
     public static void inventory(Player player, int loop) {
         pages.put(player, loop);
 
-        if (Main.showOnlyBallonsWithPermission) {
+        if (Storage.showOnlyBalloonsWithPermission) {
             File file = new File(Main.getInstance().getDataFolder(), "config.yml");
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
@@ -79,6 +83,9 @@ public class Menu implements Listener {
                         ArrayList<String> lore = new ArrayList<>();
                         lore.add("");
                         lore.add(Main.getInstance().getConfig().getString("BalloonsMenuClickToSummon"));
+                        lore.add("");
+                        lore.add(ChatColor.translateAlternateColorCodes('&',"§6» §ePrice§6: §f" +
+                                config.getString("Balloons." + list.get(i + loop) + ".price")));
                         itemmeta.setLore(lore);
                         item.setItemMeta(itemmeta);
                         inventory.setItem(slot, item);
@@ -173,7 +180,7 @@ public class Menu implements Listener {
             if (event.getView().getTitle().equalsIgnoreCase(Main.getInstance().getConfig().getString("BalloonsMenuName") + " (" + ((pages.get(player) / 45) + 1) + "/" + ((list.size() / 45) + 1) + ")")) {
                 event.setCancelled(true);
 
-                if (Main.showOnlyBallonsWithPermission) {
+                if (Storage.showOnlyBalloonsWithPermission) {
                     if (event.getCurrentItem() != null) {
                         if (slot < 45) {
                             File file = new File(Main.getInstance().getDataFolder(), "config.yml");
@@ -201,14 +208,14 @@ public class Menu implements Listener {
                                     SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + (playerlist.get(player).get(slot + pages.get(player))) + ".head")));
                                 }
                             }
-                            player.playSound(player.getLocation(),Main.getInstance().summonSound, 10,2);
+                            player.playSound(player.getLocation(),Storage.summonSound, 10,2);
                             SummonBalloons.playerBalloons.put(player, (playerlist.get(player).get(slot + pages.get(player))));
                             player.closeInventory();
                         }
 
 
                         if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
-                            player.playSound(player.getLocation(),Main.getInstance().removeSound,10,2);
+                            player.playSound(player.getLocation(),Storage.removeSound,10,2);
                             player.closeInventory();
                             SummonBalloons.removeBalloon(player);
                         }
@@ -262,7 +269,7 @@ public class Menu implements Listener {
                                                     SummonBalloons.summonBalloon(player, GetSkull.createSkull(config.getString("Balloons." + key + ".head")));
                                                 }
                                             }
-                                            player.playSound(player.getLocation(),Main.getInstance().summonSound, 10,2);
+                                            player.playSound(player.getLocation(),Storage.summonSound, 10,2);
                                             SummonBalloons.playerBalloons.put(player, key);
                                             player.closeInventory();
                                         }
@@ -277,7 +284,7 @@ public class Menu implements Listener {
                         }
 
                         if (event.getCurrentItem().getType().equals(Material.BARRIER)) {
-                            player.playSound(player.getLocation(),Main.getInstance().removeSound,10,2);
+                            player.playSound(player.getLocation(),Storage.removeSound,10,2);
                             player.closeInventory();
                             SummonBalloons.removeBalloon(player);
                             SummonBalloons.playerBalloons.remove(player);
